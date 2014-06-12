@@ -7,7 +7,8 @@ VERSION
 
 DESCRIPTION
     Mojolicious::Plugin::Logf is a plugin which will log complex
-    datastructures and avoid "unitialized" warnings.
+    datastructures and avoid "unitialized" warnings. This plugin use
+    Mojo::Log or whatever "log" in Mojo is set to, to do the actual logging.
 
 SYNOPSIS
       use Mojolicious::Lite;
@@ -21,18 +22,53 @@ SYNOPSIS
 
 HELPERS
   logf
-      $c->logf($format, @args);
+      $self = $c->logf;
+      $c = $c->logf($level => $format, @args);
 
     Logs a string formatted by the usual "printf" conventions of the C
-    library function "sprintf". @args will be converted using these rules:
+    library function "sprintf". $level need to be a valid Mojo::Log level.
+    @args will be converted using "flatten".
 
-    *   Normal string
+    Calling this method without any arguments will return $self (an instance
+    of this plugin), allowing you to call "flatten":
 
-    *   Data structure
+      @args_as_strings = $c->logf->flatten(@args);
+
+METHODS
+  flatten
+      @args_as_strings = $self->flatten(@args);
+
+    Used to convert input @args using these rules:
+
+    *   Scalar
+
+        No rule applied.
+
+    *   Object with string overloading
+
+        Will be coverted to a string using the string overloading function.
+
+    *   Data structure or object
+
+        Will be serialized using Data::Dumper with these settings:
+
+          $Data::Dumper::Indent = 0;
+          $Data::Dumper::Maxdepth = $Data::Dumper::Maxdepth || 2;
+          $Data::Dumper::Sortkeys = 1;
+          $Data::Dumper::Terse = 1;
+
+        NOTE! These settings might change, but will always do its best to
+        serialize the object into one line. $Data::Dumper::Maxdepth is used
+        to avoid dumping large nested objects. Set this variable if you need
+        deeper logging. Example:
+
+          local $Data::Dumper::Maxdepth = 1000;
+          $c->logf(info => 'Deep structure: %s', $some_object);
 
     *   Undefined value
 
-METHODS
+        Will be logged as "__UNDEF__".
+
   register
     Will register the "logf" helper in the application
 

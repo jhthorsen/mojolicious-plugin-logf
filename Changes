@@ -1,5 +1,5 @@
 Revision history for Mojolicious-Plugin-Logf
 
-0.01
+0.01     Thu Jun 12 09:59:03 2014
        * Add logf() helper
        * Add flatten() method
