@@ -1,0 +1,47 @@
+NAME
+    Mojolicious::Plugin::Logf - Plugin for logging datastructures using
+    sprintf
+
+VERSION
+    0.01
+
+DESCRIPTION
+    Mojolicious::Plugin::Logf is a plugin which will log complex
+    datastructures and avoid "unitialized" warnings.
+
+SYNOPSIS
+      use Mojolicious::Lite;
+      plugin "Logf";
+
+      get "/" => sub {
+        my $self = shift;
+
+        $self->logf(info => 'request: %s', $self->req->params->to_hash);
+      };
+
+HELPERS
+  logf
+      $c->logf($format, @args);
+
+    Logs a string formatted by the usual "printf" conventions of the C
+    library function "sprintf". @args will be converted using these rules:
+
+    *   Normal string
+
+    *   Data structure
+
+    *   Undefined value
+
+METHODS
+  register
+    Will register the "logf" helper in the application
+
+COPYRIGHT AND LICENSE
+    Copyright (C) 2014, Jan Henning Thorsen
+
+    This program is free software, you can redistribute it and/or modify it
+    under the terms of the Artistic License version 2.0.
+
+AUTHOR
+    Jan Henning Thorsen - "jhthorsen@cpan.org"
+
