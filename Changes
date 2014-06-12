@@ -1,5 +1,8 @@
 Revision history for Mojolicious-Plugin-Logf
 
+0.02     Thu Jun 12 10:02:45 2014
+       * Forgot dependencies
+
 0.01     Thu Jun 12 09:59:03 2014
        * Add logf() helper
        * Add flatten() method
