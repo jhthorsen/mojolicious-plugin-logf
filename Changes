@@ -1,5 +1,5 @@
 Revision history for Mojolicious-Plugin-Logf
 
 0.01
-       * Started project
-       * Add cool feature
+       * Add logf() helper
+       * Add flatten() method
