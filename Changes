@@ -1,5 +1,8 @@
 Revision history for Mojolicious-Plugin-Logf
 
+0.03     Fri Jun 13 11:49:33 2014
+       * Replace "package Foo {}" to makes CPAN testers happy
+
 0.02     Thu Jun 12 10:02:45 2014
        * Forgot dependencies
 
