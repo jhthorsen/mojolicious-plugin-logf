@@ -4,11 +4,11 @@ use Mojolicious::Plugin::Logf;
 
 my $logf = Mojolicious::Plugin::Logf->new;
 
-package Test {
-  use overload q("") => sub { "yikes" };
-}
-
-package main;
+eval <<"CODE" or die $@;
+package Test;
+use overload q("") => sub { "yikes" };
+1;
+CODE
 
 {
   my @args = $logf->flatten(
