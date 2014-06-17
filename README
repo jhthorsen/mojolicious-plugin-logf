@@ -3,7 +3,7 @@ NAME
     sprintf
 
 VERSION
-    0.03
+    0.04
 
 DESCRIPTION
     Mojolicious::Plugin::Logf is a plugin which will log complex
