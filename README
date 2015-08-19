@@ -3,7 +3,7 @@ NAME
     sprintf
 
 VERSION
-    0.05
+    0.06
 
 DESCRIPTION
     Mojolicious::Plugin::Logf is a plugin which will log complex
@@ -19,6 +19,29 @@ SYNOPSIS
 
         $self->logf(info => 'request: %s', $self->req->params->to_hash);
       };
+
+COPY/PASTE CODE
+    If you think it's a waste to depend on this module, you can copy paste
+    the code below to get the same functionality as the "logf" helper:
+
+      helper logf => sub {
+        my ($c, $level, $format) = (shift, shift, shift);
+        my $log = $c->app->log;
+        return $c unless $log->${ \ "is_$level" };
+        my @args = map {ref $_ eq 'CODE' ? $_->() : $_} @_;
+        local $Data::Dumper::Indent = 0;
+        local $Data::Dumper::Maxdepth = $Data::Dumper::Maxdepth || 2;
+        local $Data::Dumper::Sortkeys = 1;
+        local $Data::Dumper::Terse = 1;
+        for (@args) {
+          $_ = !defined ? "__UNDEF__" : overload::Method($_, q("")) ? "$_" : ref ? Data::Dumper::Dumper($_) : $_;
+        }
+        $log->$level(sprintf $format, @args);
+        return $c;
+      };
+
+    Note: The code above is generated and tested from the original source
+    code, but it will more difficult to get updates and bug fixes.
 
 HELPERS
   logf
@@ -75,7 +98,9 @@ METHODS
 
     *   Undefined value
 
-        Will be logged as "__UNDEF__".
+        Will be logged as "__UNDEF__". This value can be changed by setting
+        the global environment variable "MOJO_LOGF_UNDEF" before loading
+        this plugin.
 
   register
     Will register the "logf" helper in the application
