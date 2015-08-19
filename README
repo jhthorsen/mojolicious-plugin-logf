@@ -3,7 +3,7 @@ NAME
     sprintf
 
 VERSION
-    0.04
+    0.05
 
 DESCRIPTION
     Mojolicious::Plugin::Logf is a plugin which will log complex
@@ -43,6 +43,14 @@ METHODS
     *   Scalar
 
         No rule applied.
+
+    *   Code ref
+
+        A code ref will be called, and the list of return values will be
+        flattened. The code below will not calculate the request params,
+        unless the log level is "debug":
+
+          $c->logf(debug => 'request: %s', sub {$c->req->params->to_hash});
 
     *   Object with string overloading
 
