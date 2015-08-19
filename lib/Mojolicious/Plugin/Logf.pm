@@ -25,6 +25,30 @@ L<Mojo/log> is set to, to do the actual logging.
     $self->logf(info => 'request: %s', $self->req->params->to_hash);
   };
 
+=head1 COPY/PASTE CODE
+
+If you think it's a waste to depend on this module, you can copy paste the
+code below to get the same functionality as the L</logf> helper:
+
+  helper logf => sub {
+    my ($c, $level, $format) = (shift, shift, shift);
+    my $log = $c->app->log;
+    return $c unless $log->${ \ "is_$level" };
+    my @args = map {ref $_ eq 'CODE' ? $_->() : $_} @_;
+    local $Data::Dumper::Indent = 0;
+    local $Data::Dumper::Maxdepth = $Data::Dumper::Maxdepth || 2;
+    local $Data::Dumper::Sortkeys = 1;
+    local $Data::Dumper::Terse = 1;
+    for (@args) {
+      $_ = !defined ? "__UNDEF__" : overload::Method($_, q("")) ? "$_" : ref ? Data::Dumper::Dumper($_) : $_;
+    }
+    $log->$level(sprintf $format, @args);
+    return $c;
+  };
+
+Note: The code above is generated and tested from the original source code,
+but it will more difficult to get updates and bug fixes.
+
 =cut
 
 use Mojo::Base 'Mojolicious::Plugin';
@@ -119,12 +143,8 @@ sub flatten {
   local $Data::Dumper::Sortkeys = 1;
   local $Data::Dumper::Terse = 1;
 
-  for my $arg (@args) {
-    $arg = !defined $arg                 ? "__UNDEF__"
-         : overload::Method($arg, q("")) ? "$arg"
-         : ref $arg                      ? Data::Dumper::Dumper($arg)
-         :                               $arg
-         ;
+  for (@args) {
+    $_ = !defined ? "__UNDEF__" : overload::Method($_, q("")) ? "$_" : ref ? Data::Dumper::Dumper($_) : $_;
   }
 
   return @args;

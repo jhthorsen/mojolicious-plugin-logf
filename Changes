@@ -1,5 +1,8 @@
 Revision history for perl distribution Mojolicious-Plugin-Logf
 
+0.06 Not Released
+ - Provided copy/paste code
+
 0.05 2015-08-19T17:18:30+0200
  - Code refs are called, and the results flattened
 
