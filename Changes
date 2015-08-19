@@ -1,14 +1,14 @@
-Revision history for Mojolicious-Plugin-Logf
+Revision history for perl distribution Mojolicious-Plugin-Logf
 
-0.04     Tue Jun 17 22:34:40 2014
-       * Replace "package Test {}" to makes CPAN testers happy
+0.04 2014-06-17T22:34:40Z
+ - Replace "package Test {}" to makes CPAN testers happy
 
-0.03     Fri Jun 13 11:49:33 2014
-       * This was a NOOP release.
+0.03 2014-06-13T11:49:33Z
+ - This was a NOOP release.
 
-0.02     Thu Jun 12 10:02:45 2014
-       * Forgot dependencies
+0.02 2014-06-12T10:02:45Z
+ - Forgot dependencies
 
-0.01     Thu Jun 12 09:59:03 2014
-       * Add logf() helper
-       * Add flatten() method
+0.01 2014-06-12T09:59:03Z
+ - Add logf() helper
+ - Add flatten() method
