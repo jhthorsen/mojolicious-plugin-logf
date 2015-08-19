@@ -73,6 +73,14 @@ Used to convert input C<@args> using these rules:
 
 No rule applied.
 
+=item * Code ref
+
+A code ref will be called, and the list of return values will be flattened.
+The code below will not calculate the request params, unless the log level
+is "debug":
+
+  $c->logf(debug => 'request: %s', sub {$c->req->params->to_hash});
+
 =item * Object with string overloading
 
 Will be coverted to a string using the string overloading function.
@@ -103,7 +111,8 @@ Will be logged as "__UNDEF__".
 =cut
 
 sub flatten {
-  my ($self, @args) = @_;
+  my $self = shift;
+  my @args = map {ref $_ eq 'CODE' ? $_->() : $_} @_;
 
   local $Data::Dumper::Indent = 0;
   local $Data::Dumper::Maxdepth = $Data::Dumper::Maxdepth || 2;
