@@ -54,6 +54,7 @@ but it will more difficult to get updates and bug fixes.
 use Mojo::Base 'Mojolicious::Plugin';
 use Data::Dumper ();
 use overload ();
+use constant UNDEF => $ENV{MOJO_LOGF_UNDEF} || '__UNDEF__';
 
 our $VERSION = '0.05';
 
@@ -128,7 +129,9 @@ if you need deeper logging. Example:
 
 =item * Undefined value
 
-Will be logged as "__UNDEF__".
+Will be logged as "__UNDEF__". This value can be changed by setting
+the global environment variable C<MOJO_LOGF_UNDEF> before loading this
+plugin.
 
 =back
 
@@ -144,7 +147,7 @@ sub flatten {
   local $Data::Dumper::Terse = 1;
 
   for (@args) {
-    $_ = !defined ? "__UNDEF__" : overload::Method($_, q("")) ? "$_" : ref ? Data::Dumper::Dumper($_) : $_;
+    $_ = !defined ? UNDEF : overload::Method($_, q("")) ? "$_" : ref ? Data::Dumper::Dumper($_) : $_;
   }
 
   return @args;

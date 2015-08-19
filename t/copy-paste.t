@@ -11,6 +11,7 @@ my ($splice_at, @code, @helper);
     push @code, $_ unless /^\s+helper logf =>/ .. /^\s\s}/;
     chomp;
     next unless /\S/;
+    s/\sUNDEF\s/ "__UNDEF__" /;
     push @helper, "  $_" if /sub flatten/ .. /^}/;
     $splice_at ||= $. - 1 if /^\s+helper logf =>/;
   }

@@ -1,6 +1,7 @@
 Revision history for perl distribution Mojolicious-Plugin-Logf
 
 0.06 Not Released
+ - Add support for $ENV{MOJO_LOGF_UNDEF}
  - Provided copy/paste code
 
 0.05 2015-08-19T17:18:30+0200
