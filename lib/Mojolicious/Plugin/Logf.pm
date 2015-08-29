@@ -6,7 +6,7 @@ Mojolicious::Plugin::Logf - Plugin for logging datastructures using sprintf
 
 =head1 VERSION
 
-0.06
+0.07
 
 =head1 DESCRIPTION
 
@@ -56,7 +56,7 @@ use Data::Dumper ();
 use overload ();
 use constant UNDEF => $ENV{MOJO_LOGF_UNDEF} || '__UNDEF__';
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 =head1 HELPERS
 

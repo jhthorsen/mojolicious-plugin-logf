@@ -1,6 +1,6 @@
 Revision history for perl distribution Mojolicious-Plugin-Logf
 
-0.07 Not Released
+0.07 2015-08-29T10:15:15+0200
  - Fix "defined" without parentheses #1
  - Fix "ref" without parentheses #1
 
