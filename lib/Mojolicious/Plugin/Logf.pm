@@ -40,7 +40,7 @@ code below to get the same functionality as the L</logf> helper:
     local $Data::Dumper::Sortkeys = 1;
     local $Data::Dumper::Terse = 1;
     for (@args) {
-      $_ = !defined ? "__UNDEF__" : overload::Method($_, q("")) ? "$_" : ref ? Data::Dumper::Dumper($_) : $_;
+      $_ = !defined($_) ? "__UNDEF__" : overload::Method($_, q("")) ? "$_" : ref($_) ? Data::Dumper::Dumper($_) : $_;
     }
     $log->$level(sprintf $format, @args);
     return $c;
@@ -147,7 +147,7 @@ sub flatten {
   local $Data::Dumper::Terse = 1;
 
   for (@args) {
-    $_ = !defined ? UNDEF : overload::Method($_, q("")) ? "$_" : ref ? Data::Dumper::Dumper($_) : $_;
+    $_ = !defined($_) ? UNDEF : overload::Method($_, q("")) ? "$_" : ref($_) ? Data::Dumper::Dumper($_) : $_;
   }
 
   return @args;

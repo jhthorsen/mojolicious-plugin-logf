@@ -1,5 +1,9 @@
 Revision history for perl distribution Mojolicious-Plugin-Logf
 
+0.07 Not Released
+ - Fix "defined" without parentheses #1
+ - Fix "ref" without parentheses #1
+
 0.06 2015-08-19T18:17:16+0200
  - Add support for $ENV{MOJO_LOGF_UNDEF}
  - Provided copy/paste code
