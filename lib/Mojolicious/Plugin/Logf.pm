@@ -33,10 +33,14 @@ sub flatten {
 sub register {
   my ($self, $app, $config) = @_;
 
-  $app->helper(logf => sub {
-    return $self if @_ == 1;
-    return $self->logf(@_);
-  });
+  $app->helper(logf => sub { @_ == 1 ? $self : logf($self, @_) });
+  $app->log->format(\&_rfc3339) if $config->{rfc3339};
+}
+
+sub _rfc3339 {
+  my ($s, $m, $h, $day, $month, $year) = gmtime(shift);
+  sprintf '[%04d-%02d-%02dT%02d:%02d:%02dZ] [%s] %s', $year + 1900, $month + 1,
+    $day, $h, $m, $s, shift(@_), join "\n", @_, '';
 }
 
 1;
@@ -60,13 +64,17 @@ L<Mojo/log> is set to, to do the actual logging.
 =head1 SYNOPSIS
 
   use Mojolicious::Lite;
-  plugin "Logf";
+  plugin logf => {rfc3339 => 1};
 
   get "/" => sub {
-    my $self = shift;
-
-    $self->logf(info => 'request: %s', $self->req->params->to_hash);
+    my $c = shift;
+    $c->logf(info => 'request: %s', $self->req->params->to_hash);
+    $c->render(text => "cool!");
   };
+
+Setting C<rfc3339> to "1" will make the log look like this:
+
+  [2016-02-19T13:05:37Z] [info] Some log message
 
 =head1 COPY/PASTE CODE
 
