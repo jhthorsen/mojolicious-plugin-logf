@@ -1,6 +1,6 @@
 Revision history for perl distribution Mojolicious-Plugin-Logf
 
-0.08 Not Released
+0.08 2016-02-19T14:27:08+0100
  - Add option for logging with RFC3339 timestamp
 
 0.07 2015-08-29T10:15:15+0200

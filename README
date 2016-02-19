@@ -3,7 +3,7 @@ NAME
     sprintf
 
 VERSION
-    0.07
+    0.08
 
 DESCRIPTION
     Mojolicious::Plugin::Logf is a plugin which will log complex
@@ -12,13 +12,17 @@ DESCRIPTION
 
 SYNOPSIS
       use Mojolicious::Lite;
-      plugin "Logf";
+      plugin logf => {rfc3339 => 1};
 
       get "/" => sub {
-        my $self = shift;
-
-        $self->logf(info => 'request: %s', $self->req->params->to_hash);
+        my $c = shift;
+        $c->logf(info => 'request: %s', $self->req->params->to_hash);
+        $c->render(text => "cool!");
       };
+
+    Setting "rfc3339" to "1" will make the log look like this:
+
+      [2016-02-19T13:05:37Z] [info] Some log message
 
 COPY/PASTE CODE
     If you think it's a waste to depend on this module, you can copy paste
@@ -28,13 +32,17 @@ COPY/PASTE CODE
         my ($c, $level, $format) = (shift, shift, shift);
         my $log = $c->app->log;
         return $c unless $log->${ \ "is_$level" };
-        my @args = map {ref $_ eq 'CODE' ? $_->() : $_} @_;
-        local $Data::Dumper::Indent = 0;
+        my @args = map { ref $_ eq 'CODE' ? $_->() : $_ } @_;
+        local $Data::Dumper::Indent   = 0;
         local $Data::Dumper::Maxdepth = $Data::Dumper::Maxdepth || 2;
         local $Data::Dumper::Sortkeys = 1;
-        local $Data::Dumper::Terse = 1;
+        local $Data::Dumper::Terse    = 1;
         for (@args) {
-          $_ = !defined($_) ? "__UNDEF__" : overload::Method($_, q("")) ? "$_" : ref($_) ? Data::Dumper::Dumper($_) : $_;
+          $_
+            = !defined($_) ?  "__UNDEF__" 
+            : overload::Method($_, q("")) ? "$_"
+            : ref($_) ? Data::Dumper::Dumper($_)
+            :           $_;
         }
         $log->$level(sprintf $format, @args);
         return $c;
