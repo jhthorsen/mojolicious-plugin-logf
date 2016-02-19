@@ -1,7 +1,7 @@
 package Mojolicious::Plugin::Logf;
 use Mojo::Base 'Mojolicious::Plugin';
 use Data::Dumper ();
-use overload ();
+use overload     ();
 use constant UNDEF => $ENV{MOJO_LOGF_UNDEF} || '__UNDEF__';
 
 our $VERSION = '0.07';
@@ -10,21 +10,26 @@ sub logf {
   my ($self, $c, $level, $format, @args) = @_;
   my $log = $c->app->log;
 
-  $log->$level(@args ? sprintf $format, $self->flatten(@args) : $format) if $log->${ \ "is_$level" };
+  $log->$level(@args ? sprintf $format, $self->flatten(@args) : $format)
+    if $log->${\"is_$level"};
   $c;
 }
 
 sub flatten {
   my $self = shift;
-  my @args = map {ref $_ eq 'CODE' ? $_->() : $_} @_;
+  my @args = map { ref $_ eq 'CODE' ? $_->() : $_ } @_;
 
-  local $Data::Dumper::Indent = 0;
+  local $Data::Dumper::Indent   = 0;
   local $Data::Dumper::Maxdepth = $Data::Dumper::Maxdepth || 2;
   local $Data::Dumper::Sortkeys = 1;
-  local $Data::Dumper::Terse = 1;
+  local $Data::Dumper::Terse    = 1;
 
   for (@args) {
-    $_ = !defined($_) ? UNDEF : overload::Method($_, q("")) ? "$_" : ref($_) ? Data::Dumper::Dumper($_) : $_;
+    $_
+      = !defined($_) ? UNDEF
+      : overload::Method($_, q("")) ? "$_"
+      : ref($_) ? Data::Dumper::Dumper($_)
+      :           $_;
   }
 
   return @args;
@@ -39,8 +44,8 @@ sub register {
 
 sub _rfc3339 {
   my ($s, $m, $h, $day, $month, $year) = gmtime(shift);
-  sprintf '[%04d-%02d-%02dT%02d:%02d:%02dZ] [%s] %s', $year + 1900, $month + 1,
-    $day, $h, $m, $s, shift(@_), join "\n", @_, '';
+  sprintf '[%04d-%02d-%02dT%02d:%02d:%02dZ] [%s] %s', $year + 1900, $month + 1, $day, $h,
+    $m, $s, shift(@_), join "\n", @_, '';
 }
 
 1;
@@ -85,13 +90,17 @@ code below to get the same functionality as the L</logf> helper:
     my ($c, $level, $format) = (shift, shift, shift);
     my $log = $c->app->log;
     return $c unless $log->${ \ "is_$level" };
-    my @args = map {ref $_ eq 'CODE' ? $_->() : $_} @_;
-    local $Data::Dumper::Indent = 0;
+    my @args = map { ref $_ eq 'CODE' ? $_->() : $_ } @_;
+    local $Data::Dumper::Indent   = 0;
     local $Data::Dumper::Maxdepth = $Data::Dumper::Maxdepth || 2;
     local $Data::Dumper::Sortkeys = 1;
-    local $Data::Dumper::Terse = 1;
+    local $Data::Dumper::Terse    = 1;
     for (@args) {
-      $_ = !defined($_) ? "__UNDEF__" : overload::Method($_, q("")) ? "$_" : ref($_) ? Data::Dumper::Dumper($_) : $_;
+      $_
+        = !defined($_) ?  "__UNDEF__" 
+        : overload::Method($_, q("")) ? "$_"
+        : ref($_) ? Data::Dumper::Dumper($_)
+        :           $_;
     }
     $log->$level(sprintf $format, @args);
     return $c;

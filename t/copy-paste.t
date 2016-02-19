@@ -11,25 +11,22 @@ my ($splice_at, @code, @helper);
     push @code, $_ unless /^\s+helper logf =>/ .. /^\s\s}/;
     chomp;
     next unless /\S/;
-    s/\sUNDEF\s/ "__UNDEF__" /;
+    s/\bUNDEF\b/ "__UNDEF__" /;
     push @helper, "  $_" if /sub flatten/ .. /^}/;
     $splice_at ||= $. - 1 if /^\s+helper logf =>/;
   }
 }
 
-splice @helper, 0, 2, (
+splice @helper, 0, 2,
+  (
   '  helper logf => sub {',
   '    my ($c, $level, $format) = (shift, shift, shift);',
   '    my $log = $c->app->log;',
   '    return $c unless $log->${ \ "is_$level" };',
-);
+  );
 
-splice @helper, -2, 2, (
-  '    $log->$level(sprintf $format, @args);',
-  '    return $c;',
-  '  };',
-  '',
-);
+splice @helper, -2, 2,
+  ('    $log->$level(sprintf $format, @args);', '    return $c;', '  };', '',);
 
 {
   use Mojolicious::Lite;
@@ -37,7 +34,8 @@ splice @helper, -2, 2, (
   eval "@helper" or die "Unable to create copy/paste code: @helper: $@";
   get "/" => sub {
     my $c = shift;
-    $c->logf(warn => 'generated: %s', sub { $c->req->params->to_hash })->render(text => 'code');
+    $c->logf(warn => 'generated: %s', sub { $c->req->params->to_hash })
+      ->render(text => 'code');
   };
 }
 
