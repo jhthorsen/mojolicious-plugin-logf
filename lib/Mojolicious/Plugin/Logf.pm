@@ -1,4 +1,47 @@
 package Mojolicious::Plugin::Logf;
+use Mojo::Base 'Mojolicious::Plugin';
+use Data::Dumper ();
+use overload ();
+use constant UNDEF => $ENV{MOJO_LOGF_UNDEF} || '__UNDEF__';
+
+our $VERSION = '0.07';
+
+sub logf {
+  my ($self, $c, $level, $format, @args) = @_;
+  my $log = $c->app->log;
+
+  $log->$level(sprintf $format, $self->flatten(@args)) if $log->${ \ "is_$level" };
+  $c;
+}
+
+sub flatten {
+  my $self = shift;
+  my @args = map {ref $_ eq 'CODE' ? $_->() : $_} @_;
+
+  local $Data::Dumper::Indent = 0;
+  local $Data::Dumper::Maxdepth = $Data::Dumper::Maxdepth || 2;
+  local $Data::Dumper::Sortkeys = 1;
+  local $Data::Dumper::Terse = 1;
+
+  for (@args) {
+    $_ = !defined($_) ? UNDEF : overload::Method($_, q("")) ? "$_" : ref($_) ? Data::Dumper::Dumper($_) : $_;
+  }
+
+  return @args;
+}
+
+sub register {
+  my ($self, $app, $config) = @_;
+
+  $app->helper(logf => sub {
+    return $self if @_ == 1;
+    return $self->logf(@_);
+  });
+}
+
+1;
+
+=encoding utf8
 
 =head1 NAME
 
@@ -49,15 +92,6 @@ code below to get the same functionality as the L</logf> helper:
 Note: The code above is generated and tested from the original source code,
 but it will more difficult to get updates and bug fixes.
 
-=cut
-
-use Mojo::Base 'Mojolicious::Plugin';
-use Data::Dumper ();
-use overload ();
-use constant UNDEF => $ENV{MOJO_LOGF_UNDEF} || '__UNDEF__';
-
-our $VERSION = '0.07';
-
 =head1 HELPERS
 
 =head2 logf
@@ -73,16 +107,6 @@ Calling this method without any arguments will return C<$self>
 (an instance of this plugin), allowing you to call L</flatten>:
 
   @args_as_strings = $c->logf->flatten(@args);
-
-=cut
-
-sub logf {
-  my ($self, $c, $level, $format, @args) = @_;
-  my $log = $c->app->log;
-
-  $log->$level(sprintf $format, $self->flatten(@args)) if $log->${ \ "is_$level" };
-  $c;
-}
 
 =head1 METHODS
 
@@ -135,38 +159,9 @@ plugin.
 
 =back
 
-=cut
-
-sub flatten {
-  my $self = shift;
-  my @args = map {ref $_ eq 'CODE' ? $_->() : $_} @_;
-
-  local $Data::Dumper::Indent = 0;
-  local $Data::Dumper::Maxdepth = $Data::Dumper::Maxdepth || 2;
-  local $Data::Dumper::Sortkeys = 1;
-  local $Data::Dumper::Terse = 1;
-
-  for (@args) {
-    $_ = !defined($_) ? UNDEF : overload::Method($_, q("")) ? "$_" : ref($_) ? Data::Dumper::Dumper($_) : $_;
-  }
-
-  return @args;
-}
-
 =head2 register
 
 Will register the L</logf> helper in the application
-
-=cut
-
-sub register {
-  my ($self, $app, $config) = @_;
-
-  $app->helper(logf => sub {
-    return $self if @_ == 1;
-    return $self->logf(@_);
-  });
-}
 
 =head1 COPYRIGHT AND LICENSE
 
@@ -180,5 +175,3 @@ the terms of the Artistic License version 2.0.
 Jan Henning Thorsen - C<jhthorsen@cpan.org>
 
 =cut
-
-1;
