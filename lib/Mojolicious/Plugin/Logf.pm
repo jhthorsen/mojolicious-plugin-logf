@@ -10,7 +10,7 @@ sub logf {
   my ($self, $c, $level, $format, @args) = @_;
   my $log = $c->app->log;
 
-  $log->$level(sprintf $format, $self->flatten(@args)) if $log->${ \ "is_$level" };
+  $log->$level(@args ? sprintf $format, $self->flatten(@args) : $format) if $log->${ \ "is_$level" };
   $c;
 }
 
