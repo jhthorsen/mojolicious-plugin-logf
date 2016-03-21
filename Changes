@@ -1,5 +1,8 @@
 Revision history for perl distribution Mojolicious-Plugin-Logf
 
+0.09 Not Released
+ - is_$level() is deprecated
+
 0.08 2016-02-19T14:27:08+0100
  - Add option for logging with RFC3339 timestamp
 

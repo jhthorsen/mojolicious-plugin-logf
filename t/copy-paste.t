@@ -22,7 +22,7 @@ splice @helper, 0, 2,
   '  helper logf => sub {',
   '    my ($c, $level, $format) = (shift, shift, shift);',
   '    my $log = $c->app->log;',
-  '    return $c unless $log->${ \ "is_$level" };',
+  '    return $c unless $log->is_level($level);',
   );
 
 splice @helper, -2, 2,

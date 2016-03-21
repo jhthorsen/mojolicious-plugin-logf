@@ -9,9 +9,8 @@ our $VERSION = '0.08';
 sub logf {
   my ($self, $c, $level, $format, @args) = @_;
   my $log = $c->app->log;
-
   $log->$level(@args ? sprintf $format, $self->flatten(@args) : $format)
-    if $log->${\"is_$level"};
+    if $log->is_level($level);
   $c;
 }
 
@@ -89,7 +88,7 @@ code below to get the same functionality as the L</logf> helper:
   helper logf => sub {
     my ($c, $level, $format) = (shift, shift, shift);
     my $log = $c->app->log;
-    return $c unless $log->${ \ "is_$level" };
+    return $c unless $log->is_level($level);
     my @args = map { ref $_ eq 'CODE' ? $_->() : $_ } @_;
     local $Data::Dumper::Indent   = 0;
     local $Data::Dumper::Maxdepth = $Data::Dumper::Maxdepth || 2;
