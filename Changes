@@ -1,6 +1,6 @@
 Revision history for perl distribution Mojolicious-Plugin-Logf
 
-0.09 Not Released
+0.09 2016-03-21T16:41:35+0100
  - is_$level() is deprecated
 
 0.08 2016-02-19T14:27:08+0100

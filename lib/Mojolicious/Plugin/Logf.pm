@@ -4,7 +4,7 @@ use Data::Dumper ();
 use overload     ();
 use constant UNDEF => $ENV{MOJO_LOGF_UNDEF} || '__UNDEF__';
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 sub logf {
   my ($self, $c, $level, $format, @args) = @_;
@@ -57,7 +57,7 @@ Mojolicious::Plugin::Logf - Plugin for logging datastructures using sprintf
 
 =head1 VERSION
 
-0.08
+0.09
 
 =head1 DESCRIPTION
 
